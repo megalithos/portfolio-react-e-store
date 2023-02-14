@@ -123,7 +123,7 @@ app.post('/refreshToken', async (req, res) => {
 })
 
 //////////////////////////////////////////////////////////////////////////
-///////////////// adding new products ////////////////////////////////////
+////////// adding new products (requires necessary priviledges) //////////
 //////////////////////////////////////////////////////////////////////////
 // if user has valid token, return him fresh token
 // otherwise just return proper status code
@@ -171,7 +171,7 @@ app.get('/products', async (req, res) => {
     // map each product to a new object that includes the image URL
     const productsWithImageUrls = products.map(product => {
         return {
-            id: product._id,
+            id: product.id,
             title: product.title,
             price: product.price,
             productDetails: product.product_details,
@@ -181,6 +181,38 @@ app.get('/products', async (req, res) => {
 
     return res.status(200).json(productsWithImageUrls);
 })
+
+//////////////////////////////////////////////////////////////////////////
+//////////// delete product (requires necessary priviledges) /////////////
+//////////////////////////////////////////////////////////////////////////
+app.delete('/products/:productId', async (req, res) => {
+    console.log(req.body)
+    const { token } = req.body
+    
+    const productId = req.params.productId;
+    
+    // validate token (user must be logged in)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+    if (!decodedToken.user)
+    {
+        return res.status(401).json({message: "unauthorized"})
+    }
+
+    const _token = utils.GetSignedToken({user: decodedToken.user})
+    
+    // validate authentication level
+    const userFromDB = await userModel.findOne({email:decodedToken.user})
+    
+    if (userFromDB.auth_level < constants.MINIMUM_AUTHENTICATION_LEVEL_FOR_DELETING_PRODUCTS)
+    {
+        return res.status(403).json({message: "insufficient priviledges"});
+    }
+
+    await productModel.deleteByIdIfExists(productId)
+
+    return res.status(200).end();
+})
+
 
 // our own error handling
 app.use((err, req, res, next) => {

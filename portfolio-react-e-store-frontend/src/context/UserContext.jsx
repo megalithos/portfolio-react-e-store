@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import postData from '../util/requests';
+import { postData } from '../util/requests';
 import constants from '../util/constants';
 
 export const UserContext = createContext({});

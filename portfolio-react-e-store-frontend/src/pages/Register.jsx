@@ -1,7 +1,7 @@
 import { Container, Form, Button, NavLink } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
-import postData from '../util/requests';
+import { postData } from '../util/requests';
 import constants from '../util/constants';
 
 const RequestRegister = async (event, formData) => {

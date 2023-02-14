@@ -4,5 +4,6 @@ module.exports = Object.freeze({
     SERVER_ERROR_MSG_GENERIC: 'internal server error',
     SERVER_MSG_INVALID_CREDENTIALS: 'invalid credentials',
     MINIMUM_AUTHENTICATION_LEVEL_FOR_ADDING_PRODUCTS: 1,
+    MINIMUM_AUTHENTICATION_LEVEL_FOR_DELETING_PRODUCTS: 1,
     UPLOAD_DIRECTORY: 'uploads'
 })

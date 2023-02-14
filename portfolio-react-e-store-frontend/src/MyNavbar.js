@@ -6,10 +6,12 @@ import { solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro' 
 import "./index.css"
 import brandImage from './graphic/brand.png'
 import { UserContext } from './context/UserContext';
+import { CartContext } from './context/CartContext';
 
 const MyNavbar = () => {
   const { user } = useContext(UserContext);
-  
+  const { cart } = useContext(CartContext);
+
   return (
     <Navbar bg='dark' variant='dark' className="fixed-top">
     <Container fluid>
@@ -20,7 +22,7 @@ const MyNavbar = () => {
       </NavbarBrand>
       <Form className='d-flex w-50' >
         <Form.Group className='w-100'>
-          <Form.Control className='search-box' type='search'  placeholder='Kirjoita hakusana' aria-label='Search'/>
+          <Form.Control className='search-box' type='search'  placeholder='Search' aria-label='Search'/>
         </Form.Group>
         <Button className='test'>
           <FontAwesomeIcon icon={solid('magnifying-glass')}/>
@@ -51,8 +53,14 @@ const MyNavbar = () => {
         </span>
 
         </NavLink>
+        
+        
         <NavLink as={Link} to='/cart'>
+        <p className='navbar-shopping-cart-product-count-text'>
+          {cart.length > 0 ? cart.length : <></>}
+        </p>
         <FontAwesomeIcon className='navbarNavIcon' icon={solid('cart-shopping')}/>
+        
         <span className='d-none d-sm-inline-block'>
           Cart
         </span>

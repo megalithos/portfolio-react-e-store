@@ -25,6 +25,7 @@ const Products = () => {
     }, []);
 
     useEffect(()=>{
+
     }, [productsList])
 
     return (
@@ -37,7 +38,7 @@ const Products = () => {
                 {
                 productsList.map((item, index)=> {
                     return (
-                        <Product key={`product${index}`} product={item}/>
+                        <Product key={`product${index}`} product={item} setProductsList={setProductsList} productsList={productsList}/>
                     );
                 })}
             </div>

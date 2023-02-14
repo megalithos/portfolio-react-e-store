@@ -1,6 +1,6 @@
 import { Container, Form, Button, NavLink } from 'react-bootstrap';
 import React, { useState, useContext } from 'react';
-import postData from '../util/requests';
+import { postData } from '../util/requests';
 import constants from '../util/constants';
 import { UserContext, UserProvider } from '../context/UserContext';
 import { Link, useNavigate } from 'react-router-dom'

@@ -1,8 +1,11 @@
 import axios from 'axios'
 
-const postData = async (url = '', data = {}) => {
+export const postData = async (url = '', data = {}) => {
     const response = await axios.post(url, data);
     return response;
   }
 
-export default postData
+export const deleteRequest = async (url = '', data = {}) => {
+  const response = await axios.delete(url, {data:data});
+  return response;
+}

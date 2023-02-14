@@ -19,7 +19,11 @@ const findOne = async (opts) => {
 };
 
 const create = async (newProduct) => {
-    return knex(TABLE_NAME).insert(newProduct)
+    return knex(TABLE_NAME).insert(newProduct);
+}
+
+const deleteByIdIfExists = async (id) => {
+  return knex(TABLE_NAME).where('id', id).del();
 }
 
 const GetAll = async () => {
@@ -27,5 +31,5 @@ const GetAll = async () => {
 }
 
 module.exports = {
-  findOne, create, GetAll
+  findOne, create, GetAll, deleteByIdIfExists
 };

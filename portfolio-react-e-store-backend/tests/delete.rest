@@ -1,0 +1,6 @@
+DELETE http://localhost:3003/products/5
+Content-Type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE2NzYzODc2MDUsImV4cCI6MTY3NjQ3NDAwNX0.EtL-1-p02zlgLwMQcaEDLb5Ko2hNE-pBJUHPRNRUy0o"
+}
