@@ -13,7 +13,19 @@ require('dotenv').config() // use .env
 require('express-async-errors');
 
 const app = express();
-const upload = multer();
+
+// save uploaded images to UPLOAD_DIRECTORY
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, `${constants.UPLOAD_DIRECTORY}/`)
+    },
+    filename: (req, file, cb) => {
+        const uniqueFilename = utils.GenerateFilename(file.originalname);
+        cb(null, uniqueFilename)
+    }
+})
+
+const upload = multer({ storage: storage});
 
 const LISTEN_PORT = 3003;
 
@@ -22,8 +34,10 @@ helpers.CreateDefaultAdminUser();
 // set bodyParser to parse json
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
 app.use(cors())
+
+// serve uploads directory's images
+app.use('/uploads', express.static('uploads'))
 
 //////////////////////////////////////////////////////////////////////////
 ///////////////// REGISTER ///////////////////////////////////////////////
@@ -117,9 +131,6 @@ app.post('/products', upload.single('image'), async (req, res) => {
     const { title, price, productDetails, token } = req.body
     const image = req.file;
 
-    console.log(typeof(image))
-    console.log(image)
-
     // validate token (user must be logged in)
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
     if (!decodedToken.user)
@@ -137,17 +148,38 @@ app.post('/products', upload.single('image'), async (req, res) => {
         return res.status(403).json({message: "insufficient priviledges"});
     }
 
+
     // for now we will allow adding products with same names
     const newProduct = {
         title:title,
         price:price,
         product_details:productDetails,
-        image_path:'...',
+        image_filename:req.file.filename, // grab the unique filename we generated
     }
     
     await productModel.create(newProduct);
 
     return res.status(200).end();
+})
+
+//////////////////////////////////////////////////////////////////////////
+///////////////// pull all products from db //////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+app.get('/products', async (req, res) => {
+    const products = await productModel.GetAll();
+    
+    // map each product to a new object that includes the image URL
+    const productsWithImageUrls = products.map(product => {
+        return {
+            id: product._id,
+            title: product.title,
+            price: product.price,
+            productDetails: product.product_details,
+            imageUrl: `http://localhost:${LISTEN_PORT}/${constants.UPLOAD_DIRECTORY}/${product.image_filename}`
+        }
+    });
+
+    return res.status(200).json(productsWithImageUrls);
 })
 
 // our own error handling

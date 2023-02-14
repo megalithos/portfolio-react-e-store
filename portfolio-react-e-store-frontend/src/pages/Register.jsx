@@ -20,7 +20,6 @@ const RequestRegister = async (event, formData) => {
 
     try
     {
-        
         const response = await postData(`${constants.BACKEND_API_URL}/register`, requestBody)
         localStorage.setItem('token', response.data.token)
         return;

@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto')
 
 const GetSignedToken = (_obj) =>
 {
@@ -13,6 +14,12 @@ const HashPassword = (_password) =>
     return hash;
 }
 
+const GenerateFilename = (originalFilename) => {
+    const timestamp = Date.now();
+    const randomString = crypto.randomBytes(10).toString('hex');
+    return `${timestamp}-${randomString}-${originalFilename}`;
+}
+
 module.exports = {
-    GetSignedToken, HashPassword
+    GetSignedToken, HashPassword, GenerateFilename
 }

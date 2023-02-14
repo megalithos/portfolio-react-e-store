@@ -18,11 +18,14 @@ const findOne = async (opts) => {
   return query.then(([row]) => row || null);
 };
 
-const create = async (newProduct) =>
-{
+const create = async (newProduct) => {
     return knex(TABLE_NAME).insert(newProduct)
 }
 
+const GetAll = async () => {
+  return knex(TABLE_NAME).select('*');
+}
+
 module.exports = {
-  findOne, create,
+  findOne, create, GetAll
 };

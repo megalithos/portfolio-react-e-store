@@ -3,7 +3,6 @@ import React, { useContext, useEffect } from 'react'
 import { UserContext } from '../context/UserContext'
 import { Link, useNavigate } from 'react-router-dom'
 
-
 // handle log out button clicked
 const LogOut = (event, navigate, setUser) => {
     event.preventDefault();
@@ -16,11 +15,6 @@ const LogOut = (event, navigate, setUser) => {
 const Profile = () => {
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
-
-    useEffect(()=> {
-        console.log(`user: ${JSON.stringify(user)}`);
-        console.log(`type of user: ${typeof(user)}`);
-    }, [])
 
     return (
     <Container className="extra-top-margin">

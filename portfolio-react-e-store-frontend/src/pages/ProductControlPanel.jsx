@@ -6,7 +6,25 @@ import PageNotFound from "./PageNotFound";
 import constants from "../util/constants";
 
 const RequestAddNewProduct = (formData, inputRef) => {
-    console.log('RequestAddNewProduct');
+    // validation
+    if (!formData.title.length)
+    {
+        alert('Please add title for the product');
+        return;
+    }
+
+    if (parseInt(formData.price) < 0)
+    {
+        alert('Please enter valid price for the product.');
+        return;
+    }
+
+    if (!formData.image)
+    {
+        alert('Please add image for the product.');
+        return;
+    }
+    
     const axiosFormData = new FormData();
     axiosFormData.append('token', localStorage.getItem('token'));
     axiosFormData.append('title', formData.title);
@@ -21,8 +39,6 @@ const RequestAddNewProduct = (formData, inputRef) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-
-        console.log(`Received response: ${JSON.stringify(response)}`);
     }
     catch(err)
     {

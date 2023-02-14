@@ -4,9 +4,6 @@ const Home = () => {
     return (
     <>
         <Products/>
-        <Products/>
-        <Products/>
-        <Products/>
     </>
     );
 }

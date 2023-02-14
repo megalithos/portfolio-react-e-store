@@ -7,7 +7,7 @@ exports.up = function(knex) {
       table.string('title');
       table.float('price')
       table.string('product_details');
-      table.string('image_path')
+      table.string('image_filename')
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
     });

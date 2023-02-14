@@ -1,68 +1,45 @@
 import { Container } from 'react-bootstrap';
 import Product from './Product';
 import productImagePlaceholder from './graphic/product1.webp'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import constants from './util/constants';
 
-const ProductsList = [{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista","Päivitetty versio konsolista","Päivitetty versio konsolista","Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
-},
-{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
-},
-{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
-},
-{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
-},
-{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
-},
-{
-    title: "Sony PlayStation 4 Slim 500 Gt + Call of Duty Modern Warfare II -pelikonsolipaketti, musta",
-    image: productImagePlaceholder,
-    details: ["Päivitetty versio konsolista", "3 pelitapaa: TV, tabletop ja handheld", "Pelaa missä haluat ja milloin haluat", "Joy-Con-peliohjaimet", "Kehittynyt lapsilukko"],
-    price:299.99,
-    rating: 4.5,
-    inStock: true,
+const RequestProducts = async (setProductsList) => {
+    try
+    {
+        const response = await axios.get(`${constants.BACKEND_API_URL}/products`);
+        setProductsList(response.data);
+    }
+    catch (error)
+    {
+        console.log(error);
+    }      
 }
-]
 
 const Products = () => {
+    const [productsList, setProductsList] = useState([]);
+
+    useEffect(()=>{
+        RequestProducts(setProductsList)
+    }, []);
+
+    useEffect(()=>{
+    }, [productsList])
+
     return (
     <>
         <Container className='product-container extra-top-margin'>
             <h5 style={{marginTop:10, marginLeft:10}}>
-                Trendaavia tuotteita
+                Products
             </h5>
             <div className="row">
-                {ProductsList.map((item, index)=> (
-                    <Product product={item}/>
-                ))}
+                {
+                productsList.map((item, index)=> {
+                    return (
+                        <Product key={`product${index}`} product={item}/>
+                    );
+                })}
             </div>
         </Container>
 
