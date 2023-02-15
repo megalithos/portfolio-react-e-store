@@ -1,0 +1,9 @@
+POST http://localhost:3003/messages
+Content-Type: application/json
+
+{
+    "name":"erkki",
+    "email":"pertti",
+    "phone_number":"easdfasdf",
+    "message":"test"
+}

@@ -1,6 +1,5 @@
 const constants = require("../src/constants")
-const TABLE_NAME = constants.PRODUCTS_TABLE_NAME;
-const PRODUCT_ATTRIBUTES_TABLE_NAME = constants.PRODUCT_ATTRIBUTES_TABLE_NAME;
+const TABLE_NAME = constants.MESSAGES_TABLE_NAME;
 const knex = require('../knex/knex')
 
 const findOne = async (opts) => {
@@ -31,15 +30,10 @@ const GetAll = async () => {
   return knex(TABLE_NAME).select('*');
 }
 
-const GetAllByAttribute = async (productAttribute) => {
-  const products = await knex(TABLE_NAME)
-    .join(PRODUCT_ATTRIBUTES_TABLE_NAME, `${TABLE_NAME}.id`, `${PRODUCT_ATTRIBUTES_TABLE_NAME}.product_id`)
-    .where(`${PRODUCT_ATTRIBUTES_TABLE_NAME}.${productAttribute}`, true)
-    .select(`${TABLE_NAME}.*`);
-
-  return products;
+const GetAllUnread = async () => {
+  return knex(TABLE_NAME).select('read', false);
 }
 
 module.exports = {
-  findOne, create, GetAll, deleteByIdIfExists, GetAllByAttribute
+  findOne, create, GetAll, deleteByIdIfExists
 };

@@ -8,7 +8,7 @@ const LogOut = (event, navigate, setUser) => {
     event.preventDefault();
 
     localStorage.removeItem('token');    
-    setUser(null);
+    setUser({});
     navigate('/login');
 }
 

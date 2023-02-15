@@ -4,6 +4,8 @@ import { postData } from '../util/requests';
 import constants from '../util/constants';
 import { UserContext, UserProvider } from '../context/UserContext';
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RequestLogin = async (event, formData, user, setUser, navigate) => {
     event.preventDefault();
@@ -19,15 +21,14 @@ const RequestLogin = async (event, formData, user, setUser, navigate) => {
         localStorage.setItem('token', response.data.token);
         
         setUser({email:formData.email, loggedIn:true, authLevel:response.data.auth_level});
-       
+        toast.success('Login successful.', {position: 'top-center'});
         navigate('/profile');
         return;
     }
     catch (error)
     {
-        alert(error.response.data.message)
+        toast.error(error.response.data.message, {position: 'top-center'});
     }
-
 }
 
 const Login = () => {

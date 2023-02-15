@@ -9,6 +9,8 @@ import axios from 'axios';
 import { deleteRequest } from './util/requests';
 
 const ProductDetails = ({product}) => {
+    if (!product.productDetails)
+        return (<></>);
     // following code will take the product details and split by new lines as well as remove
     // strings which length is <= 1 so
     // you can enter paragraph like (into text area)
@@ -86,11 +88,13 @@ const RequestRemoveProduct = async (user, product, productsList, setProductsList
 const Product = ({product, productsList, setProductsList}) => {
     const { cart, setCart } = useContext(CartContext);
     const { user } = useContext(UserContext);
-
+    
     return (
     <>
         <Card className='productCard col-xs-3'>
-            <img className='card-img-top product-card-image' src={product.imageUrl} style={{marginTop:10, marginBottom:0}}/>
+            <div className='product-card-image-wrapper'>
+                <img className='card-img-top product-card-image' src={product.imageUrl}/>
+            </div>
             <div className='card-body'>
                 <h6 className='card-title truncated-text product-card-title'>{product.title}</h6>
                 <ProductDetails product={product}/>

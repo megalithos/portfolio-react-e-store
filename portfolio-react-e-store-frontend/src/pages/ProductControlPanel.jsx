@@ -7,67 +7,53 @@ import constants from "../util/constants";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const RequestAddNewProduct = (formData, inputRef) => {
-    // validation
-    if (!formData.image)
-    {
-        alert('Please add image for the product.');
-        return;
-    }
-    
-    const axiosFormData = new FormData();
-    axiosFormData.append('token', localStorage.getItem('token'));
-    axiosFormData.append('title', formData.title);
-    axiosFormData.append('price', formData.price);
-    axiosFormData.append('productDetails', formData.productDetails);
-    axiosFormData.append('image', formData.image);
-
-    try
-    {
-        const response = axios.post(`${constants.BACKEND_API_URL}/products`, axiosFormData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        toast.success('Successfully added new product!', {
-            position: 'top-center'
-        });
-    }
-    catch(err)
-    {
-        console.log(err)
-    }
-}
-
 const ProductControlPanel = () => {
     const { user, setUser } = useContext(UserContext);
-    const [ formData, setFormData ] = useState({
-        title:'',
-        price:0,
-        productDetails:'',
-        image:null,
-    })
-
-    const [ title, setTitle ] = useState('');
-
+    const [title, setTitle] = useState('');
+    const [price, setPrice] = useState('');
+    const [productDetails, setProductDetails] = useState('');
+    const [image, setImage] = useState(null);
+    
     console.log(title);
 
     const inputRef = useRef(null);
 
-    const handleChange = event => {
-        if (event.target.name === "image") {
-          setFormData({
-            ...formData,
-            [event.target.name]: event.target.files[0]
-          });
-          return;
+    const RequestAddNewProduct = () => {
+        if (!image)
+        {
+            toast.error('Please add an image for the product.', {position:'top-center'});
+            return;
         }
+        
+        const axiosFormData = new FormData();
+        axiosFormData.append('token', localStorage.getItem('token'));
+        axiosFormData.append('title', title);
+        axiosFormData.append('price', price);
+        axiosFormData.append('productDetails', productDetails);
+        axiosFormData.append('image', image);
+    
+        try
+        {
+            const response = axios.post(`${constants.BACKEND_API_URL}/products`, axiosFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            toast.success('Successfully added new product!', {
+                position: 'top-center'
+            });
 
-        setFormData({
-        ...formData,
-        [event.target.name]: event.target.value
-        }); 
-      }
+            // reset to initial state
+            setTitle('');
+            setPrice('');
+            setProductDetails('');
+            setImage(null);
+        }
+        catch(error)
+        {
+            toast.error(error.response.data.message, {position:'top-center'});
+        }
+    }    
 
     const handleUpload = () => {
         inputRef.current?.click();
@@ -76,7 +62,7 @@ const ProductControlPanel = () => {
     const handleFormSubmit = (event) => {
         event.preventDefault();
 
-        RequestAddNewProduct(formData)
+        RequestAddNewProduct()
     }
     
     if (user.authLevel === 0)
@@ -95,19 +81,19 @@ const ProductControlPanel = () => {
                     </Form.Group>
                     <Form.Group className='form-input-label mt-3' controlId='formBasicPrice'>
                         <Form.Label>Product price</Form.Label>
-                        <Form.Control type='number' name='price' placeholder="" onChange={handleChange} required></Form.Control>
+                        <Form.Control type='number' name='price' placeholder="" onChange={({target})=>setPrice(target.value)} value={price} required></Form.Control>
                     </Form.Group>
                     <Form.Group className='form-input-label mt-3' controlId='formBasicDetails'>
                         <Form.Label>Product details (separated by empty line)</Form.Label>
-                        <Form.Control type='text' name='productDetails' placeholder="" onChange={handleChange} as="textarea" rows={5} required></Form.Control>
+                        <Form.Control type='text' name='productDetails' placeholder="" onChange={({target})=>setProductDetails(target.value)} value={productDetails} as="textarea" rows={5} required></Form.Control>
                     </Form.Group>
                     <div className="m-3">
                         <label className='mx-3'>Choose image: </label>
-                        <input ref={inputRef} className='d-none' type='file' name='image' onChange={handleChange}/>
+                        <input ref={inputRef} className='d-none' type='file' name='image' onChange={({target})=>setImage(target.files[0])}/>
                         <Button variant='outline-primary' onClick={handleUpload}>Upload</Button>
                     </div>
-                    {formData.image !== null ?
-                    <p>Selected image: {formData.image.name}</p>
+                    {image !== null ?
+                    <p>Selected image: {image.name}</p>
                     :
                     <></>
                     }

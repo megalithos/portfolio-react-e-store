@@ -1,14 +1,22 @@
 import { Outlet, Link } from 'react-router-dom';
 import { Col, Container, NavLink, Row, Nav } from 'react-bootstrap';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const CustomerService = () => {
+const CustomerService = (props) => {
+    const location = useLocation();
+
+    
     const CustomerServiceNavLink = ({text, to}) => {
         return (
-            <NavLink className='my-3 border-dark border-bottom border-1' as={Link} to={to}>
-                {text}
+            <NavLink className={`my-3 border-dark border-bottom border-1}`} as={Link} to={to}>
+                <div className={`${location.pathname.includes(to) ? 'border-dark border-start border-3' : ''} px-1`}>
+                    {text}
+                </div>
             </NavLink>
         );
     }
+
 
     return (
         <Container className='extra-top-margin'>

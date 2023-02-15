@@ -2,13 +2,19 @@ const express = require("express");
 const multer = require('multer') // parsing multipart/form-data
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
+/* models */
 const userModel = require('./models/user')
 const productModel = require('./models/product')
+const messageModel = require('./models/message')
+const productAttributes = require('./models/productAttributes')
+
 const constants = require('./src/constants')
 const utils = require('./src/utils')
 var bodyParser = require('body-parser') // parse request bodies
 const cors = require('cors')
 const helpers = require('./src/helpers')
+
 require('dotenv').config() // use .env
 require('express-async-errors');
 
@@ -66,7 +72,7 @@ app.post('/register', async (req, res) => {
     // send token to client on successfull registration
     const token = utils.GetSignedToken({user: email})
 
-    res.status(200).json({ token:token, auth_level:newClient.auth_level })
+    res.status(200).json({ token, auth_level:newClient.auth_level })
 });
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,20 +172,36 @@ app.post('/products', upload.single('image'), async (req, res) => {
 ///////////////// pull all products from db //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 app.get('/products', async (req, res) => {
-    const products = await productModel.GetAll();
-    
-    // map each product to a new object that includes the image URL
+    const productAttribute = req.query.productAttribute;
+    let products;
+
+    // if not set, pull all
+    if (!productAttribute)
+        products = await productModel.GetAll();
+    else
+        // if it is set we want to pull the specific products
+        products = await productModel.GetAllByAttribute(productAttribute);
+
+    // add image urls
     const productsWithImageUrls = products.map(product => {
         return {
             id: product.id,
             title: product.title,
             price: product.price,
             productDetails: product.product_details,
-            imageUrl: `http://localhost:${LISTEN_PORT}/${constants.UPLOAD_DIRECTORY}/${product.image_filename}`
+            imageUrl: product.image_filename ? `http://localhost:${LISTEN_PORT}/${constants.UPLOAD_DIRECTORY}/${product.image_filename}`
+            : product.image_url
         }
-    });
+    }); 
 
-    return res.status(200).json(productsWithImageUrls);
+    if (productsWithImageUrls)
+    {
+        return res.status(200).json(productsWithImageUrls);
+    }
+    else
+    {
+        return res.status(404).end();
+    }
 })
 
 //////////////////////////////////////////////////////////////////////////
@@ -209,6 +231,33 @@ app.delete('/products/:productId', async (req, res) => {
     }
 
     await productModel.deleteByIdIfExists(productId)
+
+    return res.status(200).end();
+})
+
+//////////////////////////////////////////////////////////////////////////
+////////// sending messages (no authentication required)        //////////
+//////////////////////////////////////////////////////////////////////////
+// if user has valid token, return him fresh token
+// otherwise just return proper status code
+app.post('/messages', async (req, res) => {
+    console.log(req.body)
+    const { name, email, phone_number, message } = req.body
+    
+
+    const newMessage = {
+        name,
+        email,
+        phone_number,
+        message,
+    }
+
+    if (!name || !email || !phone_number || !message)
+    {
+        return res.status(400).json({message: 'All fields must be non-empty!'});
+    }
+    
+    await messageModel.create(newMessage);
 
     return res.status(200).end();
 })

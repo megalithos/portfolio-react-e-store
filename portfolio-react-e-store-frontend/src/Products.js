@@ -5,20 +5,20 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import constants from './util/constants';
 
-const RequestProducts = async (setProductsList) => {
-    try
-    {
-        const response = await axios.get(`${constants.BACKEND_API_URL}/products`);
-        setProductsList(response.data);
-    }
-    catch (error)
-    {
-        console.log(error);
-    }      
-}
-
-const Products = () => {
+const Products = ({title, productAttribute}) => {
     const [productsList, setProductsList] = useState([]);
+
+    const RequestProducts = async (setProductsList) => {
+        try
+        {
+            const response = await axios.get(`${constants.BACKEND_API_URL}/products?productAttribute=${productAttribute}`);
+            setProductsList(response.data);
+        }
+        catch (error)
+        {
+            console.log(error);
+        }      
+    }
 
     useEffect(()=>{
         RequestProducts(setProductsList)
@@ -30,9 +30,9 @@ const Products = () => {
 
     return (
     <>
-        <Container className='product-container extra-top-margin'>
+        <Container className='product-container'>
             <h5 style={{marginTop:10, marginLeft:10}}>
-                Products
+                {title}
             </h5>
             <div className="row">
                 {

@@ -63,6 +63,14 @@ html {
   margin:0px 0px !important;
 }
 
+.product-card-image-wrapper {
+  min-height:150px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 5px !important;
+}
+
 .product-card-image {
   display:block !important;
   max-height:150px !important;
