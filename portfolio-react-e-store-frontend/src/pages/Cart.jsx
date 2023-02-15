@@ -21,7 +21,7 @@ const Cart = () => {
                 {
                     cart.map((cartProduct)=>{
                     return (
-                        <Row className='m-3 shopping-cart-product-wrapper'>
+                        <Row className='m-3 shopping-cart-product-wrapper shadow rounded'>
                             <div className='shopping-cart-product'>
                                 <Button variant='danger' className='shopping-cart-product-x-button' onClick={()=>{RemoveProductFromCart(cartProduct.product.id)}}>X</Button>
                                 <div className='shopping-cart-product-image-wrapper'>
@@ -32,35 +32,35 @@ const Cart = () => {
                                     <h6 className='shopping-cart-text-extra-margin-left'>Product id: {cartProduct.product.id}</h6>
                                     <h6 className='shopping-cart-text-extra-margin-left'>{cartProduct.product.price}{constants.CURRENCY_CHARACTER} x {cartProduct.amount}</h6>
                                 </div>
-                            </div>
-                            
+                            </div>  
                         </Row>
                     ); 
                     })
                 }
-                <div className='shopping-cart-footer d-flex align-items-center justify-content-between mx-3'>
-                    <Button variant='primary' onClick={()=>{setCart([])}}>Empty cart</Button>
-
-                    <h5>{cart.length} products, total: {
-                        totalPrice
-                    }
-                    {constants.CURRENCY_CHARACTER}</h5>
-                    
-                    <Button variant='primary' onClick={()=>{alert('Feature not implemented :)')}}>Purchase</Button>
-                    
-
-                </div>
             </>
         );
     }
 
     return (
         <Container className='extra-top-margin text-center'>
-            <h5>Shopping cart</h5>
-            { cart.length > 0 ?
-            MainCartComponent()
-            : <h5>Your cart is empty!</h5>
-            }
+            <h4 className='mb-4'>Shopping cart</h4>
+            <div className='wrap-scroll-view wrap-scroll-view-max-height-standard'>
+                { cart.length > 0 ?
+                    MainCartComponent()
+                : <h5>Your cart is empty!</h5>
+                }
+                
+            </div>
+
+            <div className='shopping-cart-footer d-flex align-items-center justify-content-between mx-3 mt-4'>
+                <Button variant='primary' onClick={()=>{setCart([])}}>Empty cart</Button>
+                <h5 className='mt-3'>{cart.length} products, total: {
+                    totalPrice
+                } {constants.CURRENCY_CHARACTER} </h5>
+                <Button variant='primary' onClick={()=>{alert('Feature not implemented :)')}}>Purchase</Button>
+            </div>
+            
+
         </Container>
     );
 }

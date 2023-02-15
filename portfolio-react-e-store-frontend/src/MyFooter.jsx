@@ -18,13 +18,13 @@ const MyFooter = () => {
                     </NavLink>
                     <Nav className='flex-column'>
                         <NavLink as={Link} to='/customerService/frequentlyAskedQuestions' style={{color:'white'}}>
-                            <span>Frequently asked questions</span>
+                            <h6>Frequently asked questions</h6>
                         </NavLink>
                         <NavLink as={Link} to='/customerService/contactForm' style={{color:'white'}}>
-                            <h7>Contact form</h7>
+                            <h6>Contact form</h6>
                         </NavLink>
                         <NavLink as={Link} to='/customerService/aboutUs' style={{color:'white'}}>
-                            <h7>About us</h7>
+                            <h6>About us</h6>
                         </NavLink>
                     </Nav>
                 </Col>

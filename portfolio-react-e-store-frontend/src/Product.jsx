@@ -30,7 +30,7 @@ const ProductDetails = ({product}) => {
     return (
         <ul className='productCardDetails d-flex flex-column text-left'>
             {productDetailsSeparated.map((detail, index) => (
-                    <li key={index}>{detail}</li> // use the index as the key and trim the bullet point text
+                    <li key={index}><h6>{detail}</h6></li> // use the index as the key and trim the bullet point text
             ))}
         </ul>
     );
@@ -69,7 +69,6 @@ const RequestRemoveProduct = async (user, product, productsList, setProductsList
 
     try
     {
-        console.log(requestBody)
         const response = await deleteRequest(`${constants.BACKEND_API_URL}/products/${product.id}`, requestBody);
 
         // create new products list (copy) where the product we deleted from backend is deleted
@@ -107,7 +106,6 @@ const Product = ({product, productsList, setProductsList}) => {
                         <Button variant='danger' className='product-x-button product-card-footer' onClick={()=>RequestRemoveProduct(user, product, productsList, setProductsList)}>X</Button>
                     :
                         <></>
-
                     }
                     <div className='btn btn-primary w-25 product-purchase-button product-card-footer' onClick={()=>{AddItemToShoppingCart(product, cart, setCart)}}>
                         <FontAwesomeIcon className='product-shopping-cart-icon' icon={solid('cart-shopping')}/>

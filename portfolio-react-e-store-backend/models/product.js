@@ -40,6 +40,11 @@ const GetAllByAttribute = async (productAttribute) => {
   return products;
 }
 
+const GetAllWithKeyword = async (keyword) => {
+  return await knex(TABLE_NAME).where('title', 'ilike', `%${keyword}%`); // ilike for ignore case
+}
+
 module.exports = {
-  findOne, create, GetAll, deleteByIdIfExists, GetAllByAttribute
+  findOne, create, GetAll, deleteByIdIfExists, GetAllByAttribute,
+  GetAllWithKeyword
 };

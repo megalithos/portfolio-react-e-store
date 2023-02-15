@@ -1,0 +1,6 @@
+GET http://localhost:3003/messages
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE2NzY0NzgyOTIsImV4cCI6MTY3NjU2NDY5Mn0.shDvKk59vCFY185iUyop9zylBZgIA8ftLlf7hY_BG5E"
+}

@@ -171,7 +171,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
 //////////////////////////////////////////////////////////////////////////
 ///////////////// pull all products from db //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-app.get('/products', async (req, res) => {
+app.get('/products', async (req, res) => { // products?productAttribute=...
     const productAttribute = req.query.productAttribute;
     let products;
 
@@ -208,7 +208,6 @@ app.get('/products', async (req, res) => {
 //////////// delete product (requires necessary priviledges) /////////////
 //////////////////////////////////////////////////////////////////////////
 app.delete('/products/:productId', async (req, res) => {
-    console.log(req.body)
     const { token } = req.body
     
     const productId = req.params.productId;
@@ -238,10 +237,7 @@ app.delete('/products/:productId', async (req, res) => {
 //////////////////////////////////////////////////////////////////////////
 ////////// sending messages (no authentication required)        //////////
 //////////////////////////////////////////////////////////////////////////
-// if user has valid token, return him fresh token
-// otherwise just return proper status code
 app.post('/messages', async (req, res) => {
-    console.log(req.body)
     const { name, email, phone_number, message } = req.body
     
 
@@ -262,6 +258,95 @@ app.post('/messages', async (req, res) => {
     return res.status(200).end();
 })
 
+//////////////////////////////////////////////////////////////////////////
+////////// getting messages (authentication required)        /////////////
+//////////////////////////////////////////////////////////////////////////
+app.get('/messages', async (req, res) => {
+    console.log(req)
+    const read = req.query.read;
+    
+    const token = req.headers.authorization.split(' ')[1];
+
+    // validate token (user must be logged in)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+    if (!decodedToken.user)
+    {
+        return res.status(401).json({message: "unauthorized"})
+    }
+
+    const _token = utils.GetSignedToken({user: decodedToken.user})
+    
+    // validate authentication level
+    const userFromDB = await userModel.findOne({email:decodedToken.user})
+    
+    if (userFromDB.auth_level < constants.MINIMUM_AUTHENTICATION_LEVEL_FOR_GETTING_MESSAGES)
+    {
+        return res.status(403).json({message: "insufficient priviledges"});
+    }
+
+    let messages = [];
+    if (!read)
+        messages= await messageModel.GetAll();
+    else
+        messages = await messageModel.GetMessages(read);
+
+    return res.status(200).json(messages);
+})
+
+//////////////////////////////////////////////////////////////////////////
+////////// change message read flag    (authentication required) /////////
+//////////////////////////////////////////////////////////////////////////
+app.patch('/messages', async (req, res) => {
+    const { read, id } = req.body.data;
+    
+    const token = req.headers.authorization.split(' ')[1];
+    
+    console.log(`${read} ${id} ${token}`);
+
+    // validate token (user must be logged in)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+    if (!decodedToken.user)
+    {
+        return res.status(401).json({message: "unauthorized"})
+    }
+
+    const _token = utils.GetSignedToken({user: decodedToken.user})
+    
+    // validate authentication level
+    const userFromDB = await userModel.findOne({email:decodedToken.user})
+    
+    if (userFromDB.auth_level < constants.MINIMUM_AUTHENTICATION_LEVEL_FOR_PATCHING_MESSAGES)
+    {
+        return res.status(403).json({message: "insufficient priviledges"});
+    }
+
+    await messageModel.ChangeRead(id, read);
+
+    return res.status(200).end();
+})
+
+//////////////////////////////////////////////////////////////////////////
+////////// search products with a keyword from db (no auth)      /////////
+//////////////////////////////////////////////////////////////////////////
+app.get('/products/search', async (req, res) => {
+    const keyword = req.query.keyword;
+    
+    const allProductsFromDBWithKeyword = await productModel.GetAllWithKeyword(keyword);
+    
+    // fat copy paste right now from above because im lazy and tired
+    const productsWithImageUrls = allProductsFromDBWithKeyword.map(product => {
+        return {
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            productDetails: product.product_details,
+            imageUrl: product.image_filename ? `http://localhost:${LISTEN_PORT}/${constants.UPLOAD_DIRECTORY}/${product.image_filename}`
+            : product.image_url
+        }
+    }); 
+
+    res.status(200).json(productsWithImageUrls)
+})
 
 // our own error handling
 app.use((err, req, res, next) => {

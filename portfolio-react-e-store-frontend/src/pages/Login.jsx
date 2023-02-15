@@ -22,7 +22,7 @@ const RequestLogin = async (event, formData, user, setUser, navigate) => {
         
         setUser({email:formData.email, loggedIn:true, authLevel:response.data.auth_level});
         toast.success('Login successful.', {position: 'top-center'});
-        navigate('/profile');
+        navigate('/profile/unreadMessages');
         return;
     }
     catch (error)

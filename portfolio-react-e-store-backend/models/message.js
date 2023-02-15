@@ -30,10 +30,18 @@ const GetAll = async () => {
   return knex(TABLE_NAME).select('*');
 }
 
+const GetMessages = async (read) => {
+  return knex(TABLE_NAME).where('read', read);
+}
+
 const GetAllUnread = async () => {
   return knex(TABLE_NAME).select('read', false);
 }
 
+const ChangeRead = async (id, read) => {
+  return knex(TABLE_NAME).where('id', id).update("read",read);
+}
+
 module.exports = {
-  findOne, create, GetAll, deleteByIdIfExists
+  findOne, create, GetAll, deleteByIdIfExists, GetMessages, ChangeRead
 };

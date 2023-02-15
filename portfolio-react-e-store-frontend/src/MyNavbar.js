@@ -1,16 +1,21 @@
 import { Container, Nav, Navbar, NavbarBrand, NavLink,Form, Button, InputGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
 import "./index.css"
 import brandImage from './graphic/brand.png'
 import { UserContext } from './context/UserContext';
 import { CartContext } from './context/CartContext';
+import { SearchedProductsContext } from './context/SearchedProductsContext';
 
 const MyNavbar = () => {
   const { user } = useContext(UserContext);
   const { cart } = useContext(CartContext);
+  const { RequestProductsSearch } = useContext(SearchedProductsContext)
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchText, setSearchText] = useState('');
 
   const GetCartItemCount = () => {
     if (cart.length === 0)
@@ -24,6 +29,18 @@ const MyNavbar = () => {
     return (totalCartProductsCount);
   }
 
+  const HandleSearchButtonClick = event => {
+    event.preventDefault();
+
+    RequestProductsSearch(searchText);
+    
+    // hardcode this for now
+    if (location.pathname !== '/searchedProducts')
+    {
+      navigate('/searchedProducts');
+    }
+  }
+
   return (
     <Navbar bg='dark' variant='dark' className="fixed-top">
     <Container fluid>
@@ -33,8 +50,8 @@ const MyNavbar = () => {
         </NavLink>
       </NavbarBrand>
       <InputGroup className='w-75'>
-        <Form.Control className='search-box' type='search'  placeholder='Search' aria-label='Search'/>
-        <Button className='test'>
+        <Form.Control className='search-box' type='search' placeholder='Search' aria-label='Search' value={searchText} onChange={({target})=>setSearchText(target.value)}/>
+        <Button className='' onClick={HandleSearchButtonClick}>
           <FontAwesomeIcon icon={solid('magnifying-glass')}/>
         </Button>
       </InputGroup>
@@ -47,7 +64,7 @@ const MyNavbar = () => {
           </span>
         </NavLink>
         :
-        <NavLink as={Link} to='/profile'>
+        <NavLink as={Link} to='/profile/unreadMessages'>
           <FontAwesomeIcon className='navbarNavIcon' icon={solid('user')}/>
           <span className='d-none d-sm-inline-block'>
             Profile
