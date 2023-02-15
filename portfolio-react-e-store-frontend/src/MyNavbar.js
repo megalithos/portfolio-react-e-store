@@ -1,4 +1,4 @@
-import { Container, Nav, Navbar, NavbarBrand, NavLink,Form, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavbarBrand, NavLink,Form, Button, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,23 +12,32 @@ const MyNavbar = () => {
   const { user } = useContext(UserContext);
   const { cart } = useContext(CartContext);
 
+  const GetCartItemCount = () => {
+    if (cart.length === 0)
+      return;
+    
+    let totalCartProductsCount = 0;
+    cart.forEach(cartProduct => {
+      totalCartProductsCount += cartProduct.amount;
+    });
+
+    return (totalCartProductsCount);
+  }
+
   return (
     <Navbar bg='dark' variant='dark' className="fixed-top">
     <Container fluid>
       <NavbarBrand>
-        <NavLink as={Link} to='/'>
-          <img className='w-75' src={brandImage}></img>
+        <NavLink as={Link} to='/' className=''>
+          <img src={brandImage} className='d-inline-block align-top' width='120'></img>
         </NavLink>
       </NavbarBrand>
-      <Form className='d-flex w-50' >
-        <Form.Group className='w-100'>
-          <Form.Control className='search-box' type='search'  placeholder='Search' aria-label='Search'/>
-        </Form.Group>
+      <InputGroup className='w-75'>
+        <Form.Control className='search-box' type='search'  placeholder='Search' aria-label='Search'/>
         <Button className='test'>
           <FontAwesomeIcon icon={solid('magnifying-glass')}/>
         </Button>
-        
-      </Form>
+      </InputGroup>
       <Nav>
         {(!user?.loggedIn) ?
         <NavLink as={Link} to='/login'>
@@ -57,7 +66,7 @@ const MyNavbar = () => {
         
         <NavLink as={Link} to='/cart'>
         <p className='navbar-shopping-cart-product-count-text'>
-          {cart.length > 0 ? cart.length : <></>}
+          {GetCartItemCount()}
         </p>
         <FontAwesomeIcon className='navbarNavIcon' icon={solid('cart-shopping')}/>
         

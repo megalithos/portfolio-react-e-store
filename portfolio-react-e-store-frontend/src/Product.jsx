@@ -34,8 +34,30 @@ const ProductDetails = ({product}) => {
     );
 }
 
+
+// cart will be array of objects and those objects will be {product, amount}
 const AddItemToShoppingCart = async (product, cart, setCart) => {
-    const res = await setCart([...cart, product]);
+    const existingCartProduct = cart.find(cartProduct=>cartProduct.product.id === product.id);
+
+    // if cart does not contain product, add it to the cart with amount=1
+    if (!existingCartProduct)
+    {
+        const newCartProduct = {
+            product:product,
+            amount:1
+        }
+
+        setCart([...cart, newCartProduct])
+    }
+    else // don't add new but rather increase the amount
+    {
+        const newCart = [...cart]
+        
+        existingCartProduct.amount++
+
+        setCart(newCart)
+    }
+
 }
 
 const RequestRemoveProduct = async (user, product, productsList, setProductsList) => {
@@ -68,9 +90,9 @@ const Product = ({product, productsList, setProductsList}) => {
     return (
     <>
         <Card className='productCard col-xs-3'>
-            <img className='card-img-top' src={product.imageUrl} style={{marginTop:10, marginBottom:0}}/>
+            <img className='card-img-top product-card-image' src={product.imageUrl} style={{marginTop:10, marginBottom:0}}/>
             <div className='card-body'>
-                <h6 className='card-title truncated-text'>{product.title}</h6>
+                <h6 className='card-title truncated-text product-card-title'>{product.title}</h6>
                 <ProductDetails product={product}/>
 
                 <div className='product-footer d-flex justify-content-between'>

@@ -2,9 +2,7 @@ const constants = require("../src/constants")
 const TABLE_NAME = constants.USERS_TABLE_NAME;
 const knex = require('../knex/knex')
 
-const findOne = async (opts) => {
-  const { id, email } = opts;
-
+const findOne = async ({ id, email }) => {
   let query = knex(TABLE_NAME).select("*");
 
   if (Number.isInteger(id)) {

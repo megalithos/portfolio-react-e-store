@@ -1,24 +1,14 @@
 import { UserContext } from "../context/UserContext";
 import { useContext, useState, useRef } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Toast } from 'react-bootstrap';
 import axios from "axios";
 import PageNotFound from "./PageNotFound";
 import constants from "../util/constants";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RequestAddNewProduct = (formData, inputRef) => {
     // validation
-    if (!formData.title.length)
-    {
-        alert('Please add title for the product');
-        return;
-    }
-
-    if (parseInt(formData.price) < 0)
-    {
-        alert('Please enter valid price for the product.');
-        return;
-    }
-
     if (!formData.image)
     {
         alert('Please add image for the product.');
@@ -39,6 +29,9 @@ const RequestAddNewProduct = (formData, inputRef) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        toast.success('Successfully added new product!', {
+            position: 'top-center'
+        });
     }
     catch(err)
     {
@@ -54,6 +47,11 @@ const ProductControlPanel = () => {
         productDetails:'',
         image:null,
     })
+
+    const [ title, setTitle ] = useState('');
+
+    console.log(title);
+
     const inputRef = useRef(null);
 
     const handleChange = event => {
@@ -74,6 +72,12 @@ const ProductControlPanel = () => {
     const handleUpload = () => {
         inputRef.current?.click();
     }
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+
+        RequestAddNewProduct(formData)
+    }
     
     if (user.authLevel === 0)
         return (
@@ -84,18 +88,18 @@ const ProductControlPanel = () => {
         <Container className='extra-top-margin text-center'>
             <h4>Add a new product</h4>
             <Container className='d-flex justify-content-center align-items-center'>
-                <Form className="form-product-control-panel">
+                <Form className="form-product-control-panel" onSubmit={handleFormSubmit}>
                     <Form.Group className='form-input-label mt-3' controlId='formBasicTitle'>
                         <Form.Label>Product title</Form.Label>
-                        <Form.Control type='text' name='title' placeholder="" onChange={handleChange}></Form.Control>
+                        <Form.Control type='text' name='title' placeholder="" onChange={({target})=>setTitle(target.value)} value={title} required></Form.Control>
                     </Form.Group>
                     <Form.Group className='form-input-label mt-3' controlId='formBasicPrice'>
                         <Form.Label>Product price</Form.Label>
-                        <Form.Control type='number' name='price' placeholder="" onChange={handleChange}></Form.Control>
+                        <Form.Control type='number' name='price' placeholder="" onChange={handleChange} required></Form.Control>
                     </Form.Group>
                     <Form.Group className='form-input-label mt-3' controlId='formBasicDetails'>
                         <Form.Label>Product details (separated by empty line)</Form.Label>
-                        <Form.Control type='text' name='productDetails' placeholder="" onChange={handleChange} as="textarea" rows={5}></Form.Control>
+                        <Form.Control type='text' name='productDetails' placeholder="" onChange={handleChange} as="textarea" rows={5} required></Form.Control>
                     </Form.Group>
                     <div className="m-3">
                         <label className='mx-3'>Choose image: </label>
@@ -107,7 +111,7 @@ const ProductControlPanel = () => {
                     :
                     <></>
                     }
-                    <Button variant='primary' onClick={()=>{RequestAddNewProduct(formData)}}>Add</Button>
+                    <Button variant='primary' type='submit'>Add</Button>
                 </Form>
             </Container>
         </Container>
