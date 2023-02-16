@@ -9,6 +9,7 @@
 	+ You can register a new account
 	+ You can login to an account
 	+ You can log out
+	+ Your token is automatically refreshed from the server if the token is valid
 	
 - Management tools (only accessible to moderators & administrators)
 	+ Moderators and administrators get unread messages (that are sent via Contact Form) to /profile/unreadMessages page
@@ -21,7 +22,7 @@
 	+ You can search for products with a keyword
 	+ You can add and delete products as moderator/administrator
 	+ When clicking on a product it takes you to the page showing the product
-	+ 
+	
 - UI
 	+ Decent looking UI
 	+ Responsive
