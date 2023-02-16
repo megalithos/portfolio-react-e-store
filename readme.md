@@ -1,4 +1,6 @@
 # digitaldepot (react portfolio project)
+Link to demo video of the project : https://youtu.be/OwzG_AtH1II
+
 ## Technologies used
 - React, JS, NodeJS, PostgreSQL, Bootstrap, GIT
 
