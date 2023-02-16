@@ -3,11 +3,9 @@ const TABLE_NAME = constants.PRODUCTS_TABLE_NAME;
 const PRODUCT_ATTRIBUTES_TABLE_NAME = constants.PRODUCT_ATTRIBUTES_TABLE_NAME;
 const knex = require('../knex/knex')
 
-const findOne = async (opts) => {
-  const { id, title } = opts;
-  
+const findOne = async ({ id, title }) => {
   let query = knex(TABLE_NAME).select("*");
-
+  
   if (Number.isInteger(id)) {
     query = query.where("id", id);
   } else if (typeof title === "string") {

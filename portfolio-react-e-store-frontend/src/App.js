@@ -21,6 +21,7 @@ import SearchedProducts from './pages/SearchedProducts';
 import { UserProvider, UserContext } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
 import SearchedProductsContextProvider, { SearchedProductsContext } from './context/SearchedProductsContext';
+import ProductPage from './pages/ProductPage';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
               <Route index element={<Home/>}/>
               <Route path="login" element={<Login/>}/>
               <Route path="register" element={<Register/>}/>
+              <Route path='product/:productId' element={<ProductPage/>}/>
               {/* profile outlet */}
               <Route path="profile" element={<Profile/>}>
                 <Route path='unreadMessages' element={<Messages read={false}/>}/>

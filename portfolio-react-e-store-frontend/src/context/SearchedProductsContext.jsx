@@ -3,6 +3,7 @@ import axios from 'axios';
 import constants from '../util/constants';
 export const SearchedProductsContext = createContext();
 
+// another way to do this is to have query parameter so context wouldn't be needed
 const SearchedProductsContextProvider = ({ children }) => {
     const [searchedProducts, setSearchedProducts] = useState([]);
 

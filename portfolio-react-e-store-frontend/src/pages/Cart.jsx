@@ -2,17 +2,26 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import React, { useContext, useMemo } from 'react';
 import constants from '../util/constants';
+import { json, useNavigate } from 'react-router-dom';
 
 const Cart = () => {
     const { cart, setCart } = useContext(CartContext);
     const totalPrice = useMemo(()=> cart.reduce((total, cartProduct) => total + cartProduct.product.price, 0).toFixed(2), [cart]);
+    const navigate = useNavigate();
 
-    const RemoveProductFromCart = (productId) => {
+    const RemoveProductFromCart = (event, productId) => {
+        event.stopPropagation();
+
         console.log(`removing product (id:${productId}) from cart.`);
 
         const newCart = cart.filter(cartProduct=>cartProduct.product.id !== productId);
 
         setCart(newCart);
+    }
+
+    const HandleClickCartProduct = (cartProduct) => {
+        console.log(JSON.stringify(cartProduct));
+        navigate(`/product/${cartProduct.product.id}`);
     }
 
     const MainCartComponent = () => {
@@ -21,9 +30,9 @@ const Cart = () => {
                 {
                     cart.map((cartProduct)=>{
                     return (
-                        <Row className='m-3 shopping-cart-product-wrapper shadow rounded'>
+                        <Row className='m-3 shopping-cart-product-wrapper shadow rounded' onClick={()=>{HandleClickCartProduct(cartProduct)}} style={{cursor:'pointer'}}>
                             <div className='shopping-cart-product'>
-                                <Button variant='danger' className='shopping-cart-product-x-button' onClick={()=>{RemoveProductFromCart(cartProduct.product.id)}}>X</Button>
+                                <Button variant='danger' className='shopping-cart-product-x-button' onClick={(event)=>{RemoveProductFromCart(event, cartProduct.product.id)}}>X</Button>
                                 <div className='shopping-cart-product-image-wrapper'>
                                     <img src={cartProduct.product.imageUrl} className='shopping-cart-product-image' style={{marginTop:3}}></img>
                                 </div>

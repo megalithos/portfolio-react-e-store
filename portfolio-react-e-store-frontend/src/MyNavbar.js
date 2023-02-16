@@ -50,7 +50,14 @@ const MyNavbar = () => {
         </NavLink>
       </NavbarBrand>
       <InputGroup className='w-75'>
-        <Form.Control className='search-box' type='search' placeholder='Search' aria-label='Search' value={searchText} onChange={({target})=>setSearchText(target.value)}/>
+        <Form.Control className='search-box' type='search' placeholder='Search'
+        aria-label='Search' value={searchText} onChange={({target})=>setSearchText(target.value)}
+        onKeyPress={event=>
+        {if (event.key === 'Enter')
+        {
+         HandleSearchButtonClick(event);
+        }}}
+        />
         <Button className='' onClick={HandleSearchButtonClick}>
           <FontAwesomeIcon icon={solid('magnifying-glass')}/>
         </Button>

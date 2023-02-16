@@ -168,20 +168,34 @@ app.post('/products', upload.single('image'), async (req, res) => {
     return res.status(200).end();
 })
 
-//////////////////////////////////////////////////////////////////////////
-///////////////// pull all products from db //////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-app.get('/products', async (req, res) => { // products?productAttribute=...
+//////////////////////////////////////////////////////////////////////////////////////////////
+// get products from db
+// query parameters:
+//  productAttribute - can be one of the possible column names in product_attributes table
+//  productId - id of the product we get (if this is set then we will get single product)
+//
+// if none of the parameters is set we will pull all products
+//////////////////////////////////////////////////////////////////////////////////////////////
+app.get('/products', async (req, res) => {
     const productAttribute = req.query.productAttribute;
-    let products;
+    const productId =  parseInt(req.query.productId);
+    let products = [];
 
-    // if not set, pull all
-    if (!productAttribute)
+    // if productId or productAttribute not set in query, pull all
+    if (!productAttribute && !productId)
         products = await productModel.GetAll();
-    else
+    else if (productAttribute)
         // if it is set we want to pull the specific products
         products = await productModel.GetAllByAttribute(productAttribute);
+    else if (productId)
+    {
+        const foundProduct = await productModel.findOne({id:productId})
 
+        products.push(foundProduct)
+        console.log(products)
+    }
+    
+    
     // add image urls
     const productsWithImageUrls = products.map(product => {
         return {
